@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { chooseBestPlan } from "@/lib/optimizer/engine";
 import { currency, percent } from "@/lib/format";
 import type { OptimizerInput } from "@/lib/optimizer/types";
+import type { EmergencySettings, Expense, IncomeSource, Loan, Payment } from "@/lib/types/database";
 
 export default async function LoanDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -18,10 +19,16 @@ export default async function LoanDetailsPage({ params }: { params: Promise<{ id
     supabase.from("loans").select("*").eq("user_id", user!.id),
     supabase.from("payments").select("*").eq("loan_id", id).eq("user_id", user!.id).order("payment_date", { ascending: false })
   ]);
-  const loan = loanResult.data;
+  const loan = loanResult.data as Loan | null;
   if (!loan) notFound();
 
-  const input: OptimizerInput = { incomeSources: income.data ?? [], expenses: expenses.data ?? [], emergencyRule: emergency.data, loans: loans.data ?? [] };
+  const paymentRows = (payments.data ?? []) as Payment[];
+  const input: OptimizerInput = {
+    incomeSources: (income.data ?? []) as IncomeSource[],
+    expenses: (expenses.data ?? []) as Expense[],
+    emergencyRule: emergency.data as EmergencySettings | null,
+    loans: (loans.data ?? []) as Loan[]
+  };
   const { winner } = chooseBestPlan(input);
   const row = winner.schedule.find((item) => item.loanId === loan.id);
   const monthlyInterest = loan.current_balance * (loan.apr / 100 / 12);
@@ -58,14 +65,14 @@ export default async function LoanDetailsPage({ params }: { params: Promise<{ id
         <h2 className="mb-4 text-lg font-semibold">Payment History</h2>
         <table className="w-full text-left text-sm">
           <thead><tr className="border-b"><th className="py-2">Date</th><th>Amount</th><th>Extra</th><th>Interest</th><th>Principal</th><th /></tr></thead>
-          <tbody>{payments.data?.map((payment) => <tr key={payment.id} className="border-b last:border-0"><td className="py-3">{payment.payment_date}</td><td>{currency(payment.amount)}</td><td>{currency(payment.extra_amount)}</td><td>{currency(payment.interest_paid)}</td><td>{currency(payment.principal_paid)}</td><td><form action={deletePayment}><input type="hidden" name="id" value={payment.id} /><button className="btn-secondary py-1" type="submit">Delete</button></form></td></tr>)}</tbody>
+          <tbody>{paymentRows.map((payment) => <tr key={payment.id} className="border-b last:border-0"><td className="py-3">{payment.payment_date}</td><td>{currency(payment.amount)}</td><td>{currency(payment.extra_amount)}</td><td>{currency(payment.interest_paid)}</td><td>{currency(payment.principal_paid)}</td><td><form action={deletePayment}><input type="hidden" name="id" value={payment.id} /><button className="btn-secondary py-1" type="submit">Delete</button></form></td></tr>)}</tbody>
         </table>
-        {!payments.data?.length ? <p className="py-6 text-center text-sm text-slate-500">No payments logged for this loan yet.</p> : null}
+        {!paymentRows.length ? <p className="py-6 text-center text-sm text-slate-500">No payments logged for this loan yet.</p> : null}
       </section>
-      {payments.data?.length ? (
+      {paymentRows.length ? (
         <section className="space-y-4">
           <h2 className="text-xl font-semibold">Edit Payments</h2>
-          {payments.data.map((payment) => <PaymentForm key={payment.id} loanId={loan.id} payment={payment} />)}
+          {paymentRows.map((payment) => <PaymentForm key={payment.id} loanId={loan.id} payment={payment} />)}
         </section>
       ) : null}
     </div>

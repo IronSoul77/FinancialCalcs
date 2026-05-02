@@ -4,11 +4,13 @@ import { deleteLoan } from "@/app/actions/data";
 import { LoanForm } from "@/components/Forms";
 import { createClient } from "@/lib/supabase/server";
 import { currency, percent } from "@/lib/format";
+import type { Loan } from "@/lib/types/database";
 
 export default async function LoansPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   const { data } = await supabase.from("loans").select("*").eq("user_id", user!.id).order("apr", { ascending: false });
+  const rows = (data ?? []) as Loan[];
 
   return (
     <div className="space-y-6">
@@ -31,7 +33,7 @@ export default async function LoansPage() {
             </tr>
           </thead>
           <tbody>
-            {data?.map((loan) => (
+            {rows.map((loan) => (
               <tr key={loan.id} className="border-b last:border-0">
                 <td className="py-3"><Link href={`/loans/${loan.id}`} className="font-semibold text-teal-800 hover:underline">{loan.name}</Link></td>
                 <td>{loan.loan_type}</td>
@@ -49,7 +51,7 @@ export default async function LoansPage() {
             ))}
           </tbody>
         </table>
-        {!data?.length ? <p className="py-6 text-center text-sm text-slate-500">No loans yet. Add one above to unlock the optimizer.</p> : null}
+        {!rows.length ? <p className="py-6 text-center text-sm text-slate-500">No loans yet. Add one above to unlock the optimizer.</p> : null}
       </div>
     </div>
   );

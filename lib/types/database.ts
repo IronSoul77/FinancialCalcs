@@ -110,17 +110,26 @@ export type RepaymentPlanMonth = {
   created_at: string;
 };
 
+type DbRow<Row> = Row & Record<string, unknown>;
+
+type Table<Row> = {
+  Row: DbRow<Row>;
+  Insert: Partial<DbRow<Row>>;
+  Update: Partial<DbRow<Row>>;
+  Relationships: [];
+};
+
 export type Database = {
   public: {
     Tables: {
-      profiles: { Row: Profile; Insert: Partial<Profile>; Update: Partial<Profile> };
-      income_sources: { Row: IncomeSource; Insert: Partial<IncomeSource>; Update: Partial<IncomeSource> };
-      expenses: { Row: Expense; Insert: Partial<Expense>; Update: Partial<Expense> };
-      emergency_settings: { Row: EmergencySettings; Insert: Partial<EmergencySettings>; Update: Partial<EmergencySettings> };
-      loans: { Row: Loan; Insert: Partial<Loan>; Update: Partial<Loan> };
-      payments: { Row: Payment; Insert: Partial<Payment>; Update: Partial<Payment> };
-      repayment_plans: { Row: RepaymentPlan; Insert: Partial<RepaymentPlan>; Update: Partial<RepaymentPlan> };
-      repayment_plan_months: { Row: RepaymentPlanMonth; Insert: Partial<RepaymentPlanMonth>; Update: Partial<RepaymentPlanMonth> };
+      profiles: Table<Profile>;
+      income_sources: Table<IncomeSource>;
+      expenses: Table<Expense>;
+      emergency_settings: Table<EmergencySettings>;
+      loans: Table<Loan>;
+      payments: Table<Payment>;
+      repayment_plans: Table<RepaymentPlan>;
+      repayment_plan_months: Table<RepaymentPlanMonth>;
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
