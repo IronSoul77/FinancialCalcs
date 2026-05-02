@@ -11,8 +11,8 @@ export default function LandingPage() {
             Understand monthly cash flow, protect emergency savings, and pay off loans in the most efficient order to reduce wasted interest.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link href="/signup" className="btn-primary">Sign Up</Link>
-            <Link href="/login" className="btn-secondary">Log In</Link>
+            <Link href="/dashboard" className="btn-primary">Start Planning</Link>
+            <Link href="/setup" className="btn-secondary">Enter My Numbers</Link>
           </div>
           <p className="mt-8 text-sm text-slate-500">
             Educational planning estimates only. This is not professional financial advice and savings are not guaranteed.
@@ -20,7 +20,7 @@ export default function LandingPage() {
         </div>
         <div className="rounded-lg border border-slate-200 bg-slate-50 p-6">
           <div className="grid gap-4">
-            {["Cash flow after required expenses", "Emergency savings guardrails", "Avalanche, snowball, hybrid simulations", "Month by month repayment schedule"].map((item) => (
+            {["No account required", "Cash flow after required expenses", "Emergency savings guardrails", "Month by month repayment schedule"].map((item) => (
               <div key={item} className="rounded-md bg-white p-4 shadow-sm">
                 <p className="font-semibold text-slate-900">{item}</p>
                 <div className="mt-3 h-2 rounded-full bg-slate-100"><div className="h-2 w-2/3 rounded-full bg-teal-700" /></div>
