@@ -1,5 +1,6 @@
 # Smart Debt Optimizer
-
+Vibe coded all this shi
+this is AI Generated OFC
 Smart Debt Optimizer is a salary based financial planning and loan repayment app. It helps a signed-in user enter income, required and optional expenses, emergency savings rules, loans, and payments, then generates a deterministic month by month repayment strategy.
 
 The app compares minimum payments only, debt avalanche, debt snowball, and an optimized hybrid strategy. It chooses the projected lowest-interest plan while respecting expenses, emergency savings, minimum payments, prepayment penalties, promotional deadlines, late fee risk, and variable interest risk.
