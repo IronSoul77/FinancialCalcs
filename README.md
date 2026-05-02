@@ -1,2 +1,2 @@
 # FinancialCalcs
-Lalaland
+Lalaland: Vibe Coding!
